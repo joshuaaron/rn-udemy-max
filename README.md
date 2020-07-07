@@ -1,0 +1,1 @@
+#### Base Expo RN app with React Navigation 5 setup
