@@ -13,13 +13,14 @@ import { store } from './store';
 import { appTheme } from './constants/colors';
 import { ProductOverviewScreen } from './screens/ProductsOverviewScreen';
 import { ProductDetailScreen } from './screens/ProductDetailScreen';
+import { CartScreen } from './screens/CartScreen';
 
 const fetchFonts = () => {
     return Font.loadAsync({
         'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
         'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
     });
-}
+};
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -50,7 +51,8 @@ const TabNavigator = () => (
             component={BaseStackNavigator}
         />
     </Tab.Navigator>
-)
+);
+
 const BaseStackNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{
@@ -70,6 +72,10 @@ const BaseStackNavigator = () => {
                 name='ProductDetail'
                 component={ProductDetailScreen}
                 options={({ route }) => ({ title: route.params.productTitle })}
+            />
+            <Stack.Screen
+                name='Cart'
+                component={CartScreen}
             />
         </Stack.Navigator>
     )
