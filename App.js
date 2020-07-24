@@ -8,12 +8,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 import { store } from './store';
 import { appTheme } from './constants/colors';
 import { ProductOverviewScreen } from './screens/ProductsOverviewScreen';
 import { ProductDetailScreen } from './screens/ProductDetailScreen';
 import { CartScreen } from './screens/CartScreen';
+import { OrdersScreen } from './screens/OrdersScreen';
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -37,12 +39,34 @@ export default function App() {
         <Provider store={store}>
             <NavigationContainer>
                 <Drawer.Navigator>
-                    <Drawer.Screen name="Home" component={TabNavigator} />
+                    <Drawer.Screen name="Home" component={TabNavigator} options={{
+                        drawerIcon: config => <Ionicons
+                            size={23}
+                            color={config.tintColor}
+                            name={Platform.OS === 'android' ? 'md-create' : 'ios-create'} />
+                    }} />
+                    <Drawer.Screen name="Orders" component={OrdersNavigator} options={{
+                        drawerIcon: config => <Ionicons
+                            size={23}
+                            color={config.tintColor}
+                            name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'} />
+                    }} />
                 </Drawer.Navigator>
             </NavigationContainer>
         </Provider>
     );
 }
+
+
+const OrdersNavigator = () => (
+    <Stack.Navigator initialRouteName='Order'>
+        <Stack.Screen
+            name='Your Orders'
+            component={OrdersScreen}
+        />
+    </Stack.Navigator>
+);
+
 
 const TabNavigator = () => (
     <Tab.Navigator initialRouteName='Home'>

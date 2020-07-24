@@ -16,6 +16,11 @@ export const ProductOverviewScreen = ({ navigation }) => {
                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                     <Item iconName={'ios-cart'} onPress={() => navigation.navigate('Cart')} />
                 </HeaderButtons>
+            ),
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                    <Item iconName={'ios-menu'} onPress={() => navigation.toggleDrawer() } />
+                </HeaderButtons>
             )
         })
     }, [navigation])
