@@ -23,26 +23,34 @@ export const ProductOverviewScreen = ({ navigation }) => {
                 </HeaderButtons>
             )
         })
-    }, [navigation])
+    }, [navigation]);
+
+    const selectItemHandler = (id, title) => {
+        navigation.navigate('ProductDetail', {
+            productId: id,
+            productTitle: title
+        })
+    }
 
     return (
         <FlatList
-            data={allProducts}
+            data={allProducts} 
             renderItem={({ item }) => (
                 <ProductItem
                     title={item.title}
                     price={item.price}
                     image={item.imageUrl}
-                    onViewDetails={() => {
-                        navigation.navigate('ProductDetail', {
-                            productId: item.id,
-                            productTitle: item.title
-                        })
+                    onSelect={() => {
+                        selectItemHandler(item.id, item.title);
                     }}
-                    onAddToCart={() => {
+                >
+                    <Button color={appTheme.primary} title="View Details" onPress={() => {
+                        selectItemHandler(item.id, item.title);
+                    }}/>
+                    <Button color={appTheme.primary} title="Add to Cart" onPress={() => {
                         dispatch(cartActions.addToCart(item))
-                    }}
-                />
+                    }} />
+                </ProductItem>
             )}
         />
     );
