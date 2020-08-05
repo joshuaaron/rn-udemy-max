@@ -5,6 +5,7 @@ import { appTheme } from '../constants/colors';
 import { CartItem } from '../components/shop/CartItem';
 import { removeFromCart } from '../store/actions/cart';
 import { addOrder } from '../store/actions/orders';
+import { Card } from '../components/UI/Card';
 
 export const CartScreen = (props) => {
     const cartTotal = useSelector(state => state.cart.totalAmount);
@@ -20,12 +21,12 @@ export const CartScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.summary}>
+            <Card style={styles.summary}>
                 <Text style={styles.summaryText}>
-                    <Text style={styles.amount}>${cartTotal.toFixed(2)}</Text>
+                    <Text style={styles.amount}>${Math.abs(cartTotal.toFixed(2))}</Text>
                 </Text>
                 <Button title='Order Now' color={appTheme.accent} disabled={!cartItems.length} onPress={handleOrder}/>
-            </View>
+            </Card>
             <FlatList
                 data={cartItems}
                 keyExtractor={item => item.productId}
@@ -53,14 +54,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
-        padding: 10,
-        shadowColor: 'black',
-        shadowOpacity: 0.25,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-        elevation: 5,
-        borderRadius: 10,
-        backgroundColor: 'white',
+        padding: 10, 
     },
     summaryText: {
         fontFamily: 'open-sans-bold',

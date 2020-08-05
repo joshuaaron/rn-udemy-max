@@ -61,10 +61,10 @@ export const cartReducer = (state = initialState, action) => {
                 return state;
             }
 
-            const updatedItems = {...state.items};
+            const copiedItems = {...state.items};
             const itemTotal = state.items[action.payload].sum;
 
-            delete updatedItems[action.payload];
+            delete copiedItems[action.payload];
             return {
                 ...state,
                 items: updatedItems,

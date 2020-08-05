@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { ProductItem } from '../components/shop/ProductItem';
 import * as cartActions from '../store/actions/cart';
 import { CustomHeaderButton } from '../components/UI/HeaderButton';
+import { appTheme } from '../constants/colors';
 
 export const ProductOverviewScreen = ({ navigation }) => {
     const allProducts = useSelector(state => state.products.availableProducts);

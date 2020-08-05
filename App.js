@@ -17,6 +17,7 @@ import { ProductDetailScreen } from './screens/ProductDetailScreen';
 import { CartScreen } from './screens/CartScreen';
 import { OrdersScreen } from './screens/OrdersScreen';
 import { UserProductScreen } from './screens/UserProductScreen';
+import { EditProductScreen } from './screens/EditProductScreen';
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -52,7 +53,7 @@ export default function App() {
                             color={config.tintColor}
                             name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'} />
                     }} />
-                    <Drawer.Screen name="Home" component={AdminNavigator} options={{
+                    <Drawer.Screen name="Admin" component={AdminNavigator} options={{
                         drawerIcon: config => <Ionicons
                             size={23}
                             color={config.tintColor}
@@ -69,6 +70,10 @@ const AdminNavigator = () => (
         <Stack.Screen
             name='User Products'
             component={UserProductScreen}
+        />
+        <Stack.Screen
+            name="Edit"
+            component={EditProductScreen}
         />
     </Stack.Navigator>
 );

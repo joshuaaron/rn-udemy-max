@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button, Platform, TouchableNativeFeedback } from 'react-native';
+import { Card } from '../UI/Card';
 
 export const ProductItem = (props) => {
     let Touchable = TouchableOpacity;
@@ -10,7 +11,7 @@ export const ProductItem = (props) => {
 
     return (
         <Touchable onPress={props.onSelect} activeOpacity={0.8} useForeground>
-            <View style={styles.container}>
+            <Card style={styles.container}>
                 <View style={styles.imageWrapper}>
                     <Image style={styles.image} source={{ uri: props.image }} />
                 </View>
@@ -21,20 +22,13 @@ export const ProductItem = (props) => {
                 <View style={styles.actions}>
                     {props.children}
                 </View>
-            </View>
+            </Card>
         </Touchable>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        shadowColor: 'black',
-        shadowOpacity: 0.25,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-        elevation: 5,
-        borderRadius: 10,
-        backgroundColor: 'white',
         height: 300,
         margin: 20,
     },
