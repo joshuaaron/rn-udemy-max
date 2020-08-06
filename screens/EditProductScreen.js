@@ -8,8 +8,25 @@ import { updateProduct, createProduct } from '../store/actions/products';
 const formReducer = (state, action) => {
     switch (action.type) {
         case 'UPDATE': {
+            const { field, text, isValid } = action.payload;
+            const updatedValues = {
+                ...state.inputValues,
+                [field]: text,
+            }
+            const updatedValidities = {
+                ...state.inputValidities,
+                [field]: isValid,
+            }
+            let formIsValid = true;
+            for (const key in updatedValidities) {
+                formIsValid = formIsValid && updatedValidities[key];
+            }
+            return {
+                formIsValid,
+                inputValues: updatedValues,
+                inputValidities: updatedValidities,
 
-            return state;
+            };
         }
         default:
             return state;
@@ -37,7 +54,13 @@ export const EditProductScreen = ({ navigation, route }) => {
         formIsValid: editedProduct ? true : false,
     });
 
+    const { title, imageUrl, price, description } = state.inputValues;
+
     const submitHandler = useCallback(() => {
+        if (!state.formIsValid) {
+            return;
+        }
+
         if (editedProduct) {
             dispatch(updateProduct(id, title, description, imageUrl))
         }
@@ -58,12 +81,12 @@ export const EditProductScreen = ({ navigation, route }) => {
         })
     }, [navigation, id, submitHandler])
 
-    const titleChangeHandler = text => {
+    const textChangeHandler = (fieldName, text) => {
         let isValid = false;
         if (text.trim().length > 0) {
             isValid = true;
         }
-        updateProduct({ type: 'UPDATE', payload: { field: 'title', text, isValid }})
+        updater({ type: 'UPDATE', payload: { field: fieldName, text, isValid }})
     }
 
     return (
@@ -71,19 +94,19 @@ export const EditProductScreen = ({ navigation, route }) => {
             <View style={styles.form}>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Title</Text>
-                    <TextInput autoCapitalize='sentences' style={styles.input} value={title} onChangeText={titleChangeHandler} />
+                    <TextInput autoCapitalize='sentences' style={styles.input} value={title} onChangeText={textChangeHandler.bind(this, 'title')} />
                 </View>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Image URL</Text>
-                    <TextInput style={styles.input} value={imageUrl} onChangeText={text => setImageUrl(text)} />
+                    <TextInput style={styles.input} value={imageUrl} onChangeText={textChangeHandler.bind(this, 'imageUrl')} />
                 </View>
                 {editedProduct ? null : (<View style={styles.formControl}>
                     <Text style={styles.label}>Price</Text>
-                    <TextInput keyboardType={'decimal-pad'} style={styles.input} value={price} onChangeText={text => setPrice(text)} />
+                    <TextInput keyboardType={'decimal-pad'} style={styles.input} value={price} onChangeText={textChangeHandler.bind(this, 'price')} />
                 </View>)}
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Description</Text>
-                    <TextInput style={styles.input} value={description} onChangeText={text => setDescription(text)} />
+                    <TextInput style={styles.input} value={description} onChangeText={textChangeHandler.bind(this, 'description')} />
                 </View>
             </View>
         </ScrollView>
