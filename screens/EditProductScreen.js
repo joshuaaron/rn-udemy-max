@@ -1,9 +1,10 @@
 import React, { useCallback, useLayoutEffect, useReducer } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, ScrollView } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { CustomHeaderButton } from '../components/UI/HeaderButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProduct, createProduct } from '../store/actions/products';
+import { Input } from '../components/UI/Input';
 
 const formReducer = (state, action) => {
     switch (action.type) {
@@ -90,26 +91,93 @@ export const EditProductScreen = ({ navigation, route }) => {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.form}>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Title</Text>
-                    <TextInput autoCapitalize='sentences' style={styles.input} value={title} onChangeText={textChangeHandler.bind(this, 'title')} />
+        <KeyboardAvoidingView keyboardVerticalOffset={100} behavior='padding' style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <View style={styles.form}>
+                    <Input
+                        value={title}
+                        label={'Title'}
+                        autoCapitalize='sentences' 
+                        onChangeText={textChangeHandler.bind(this, 'title')}
+                    />
+                    <Input
+                        value={imageUrl}
+                        label={'Image URL'}
+                        onChangeText={textChangeHandler.bind(this, 'imageUrl')}
+                    />
+                    {editedProduct ? null : (
+                        <Input
+                            value={price}
+                            label={'Price'}
+                            onChangeText={textChangeHandler.bind(this, 'price')}
+                        />
+                    )}
+                    <Input
+                        value={description}
+                        label={'Description'}
+                        onChangeText={textChangeHandler.bind(this, 'description')}
+                        numberOfLines={3}
+                        autoCapitalize='sentences' 
+                        multiline
+                        autoCorrect
+                    />
+                    <Input
+                        value={title}
+                        label={'Title'}
+                        autoCapitalize='sentences' 
+                        onChangeText={textChangeHandler.bind(this, 'title')}
+                    />
+                    <Input
+                        value={imageUrl}
+                        label={'Image URL'}
+                        onChangeText={textChangeHandler.bind(this, 'imageUrl')}
+                    />
+                    {editedProduct ? null : (
+                        <Input
+                            value={price}
+                            label={'Price'}
+                            onChangeText={textChangeHandler.bind(this, 'price')}
+                        />
+                    )}
+                    <Input
+                        value={description}
+                        label={'Description'}
+                        onChangeText={textChangeHandler.bind(this, 'description')}
+                        numberOfLines={3}
+                        autoCapitalize='sentences' 
+                        multiline
+                        autoCorrect
+                    />
+                    <Input
+                        value={title}
+                        label={'Title'}
+                        autoCapitalize='sentences' 
+                        onChangeText={textChangeHandler.bind(this, 'title')}
+                    />
+                    <Input
+                        value={imageUrl}
+                        label={'Image URL'}
+                        onChangeText={textChangeHandler.bind(this, 'imageUrl')}
+                    />
+                    {editedProduct ? null : (
+                        <Input
+                            value={price}
+                            label={'Price'}
+                            onChangeText={textChangeHandler.bind(this, 'price')}
+                        />
+                    )}
+                    <Input
+                        value={description}
+                        label={'Description'}
+                        onChangeText={textChangeHandler.bind(this, 'description')}
+                        numberOfLines={3}
+                        autoCapitalize='sentences' 
+                        multiline
+                        autoCorrect
+                    />
                 </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Image URL</Text>
-                    <TextInput style={styles.input} value={imageUrl} onChangeText={textChangeHandler.bind(this, 'imageUrl')} />
-                </View>
-                {editedProduct ? null : (<View style={styles.formControl}>
-                    <Text style={styles.label}>Price</Text>
-                    <TextInput keyboardType={'decimal-pad'} style={styles.input} value={price} onChangeText={textChangeHandler.bind(this, 'price')} />
-                </View>)}
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Description</Text>
-                    <TextInput style={styles.input} value={description} onChangeText={textChangeHandler.bind(this, 'description')} />
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -117,19 +185,5 @@ const styles = StyleSheet.create({
     container: {},
     form: {
         margin: 20,
-    },
-    formControl: {
-        width: '100%'
-    },
-    label: {
-        fontFamily: 'open-sans-bold',
-        marginVertical: 8
-    },
-    input: {
-        paddingHorizontal: 2,
-        paddingVertical: 5,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1,
-        marginBottom: 10,
     },
 });
