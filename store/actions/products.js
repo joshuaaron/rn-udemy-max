@@ -10,10 +10,27 @@ export const deleteProduct = productId => {
 }
 
 export const createProduct = (title, desc, imageUrl, price) => {
-    return {
-        type: CREATE_PRODUCT,
-        payload: {
-            title, desc, imageUrl, price
+    const results = { title, desc, imageUrl, price };
+
+    return async (dispatch) => {
+        try {
+            const response = await fetch('https://rn-course-max.firebaseio.com/products.json', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(results)
+            });
+            const data = await response.json();
+
+            dispatch({
+                type: CREATE_PRODUCT,
+                payload: {
+                    id: data.name, title, desc, imageUrl, price
+                }
+            });
+        } catch (err) {
+            console.log(err.message)
         }
     }
 }

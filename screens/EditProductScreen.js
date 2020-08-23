@@ -121,60 +121,6 @@ export const EditProductScreen = ({ navigation, route }) => {
                         multiline
                         autoCorrect
                     />
-                    <Input
-                        value={title}
-                        label={'Title'}
-                        autoCapitalize='sentences' 
-                        onChangeText={textChangeHandler.bind(this, 'title')}
-                    />
-                    <Input
-                        value={imageUrl}
-                        label={'Image URL'}
-                        onChangeText={textChangeHandler.bind(this, 'imageUrl')}
-                    />
-                    {editedProduct ? null : (
-                        <Input
-                            value={price}
-                            label={'Price'}
-                            onChangeText={textChangeHandler.bind(this, 'price')}
-                        />
-                    )}
-                    <Input
-                        value={description}
-                        label={'Description'}
-                        onChangeText={textChangeHandler.bind(this, 'description')}
-                        numberOfLines={3}
-                        autoCapitalize='sentences' 
-                        multiline
-                        autoCorrect
-                    />
-                    <Input
-                        value={title}
-                        label={'Title'}
-                        autoCapitalize='sentences' 
-                        onChangeText={textChangeHandler.bind(this, 'title')}
-                    />
-                    <Input
-                        value={imageUrl}
-                        label={'Image URL'}
-                        onChangeText={textChangeHandler.bind(this, 'imageUrl')}
-                    />
-                    {editedProduct ? null : (
-                        <Input
-                            value={price}
-                            label={'Price'}
-                            onChangeText={textChangeHandler.bind(this, 'price')}
-                        />
-                    )}
-                    <Input
-                        value={description}
-                        label={'Description'}
-                        onChangeText={textChangeHandler.bind(this, 'description')}
-                        numberOfLines={3}
-                        autoCapitalize='sentences' 
-                        multiline
-                        autoCorrect
-                    />
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

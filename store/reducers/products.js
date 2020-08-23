@@ -9,8 +9,8 @@ const initialState = {
 export const productsReducer = (state = initialState, action) => {
     switch (action.type) {
         case CREATE_PRODUCT: {
-            const { title, description, imageUrl, price } = action.payload; 
-            const newProduct = new Product(new Date().toString(), 'u1', title, imageUrl, description, price);
+            const { title, description, imageUrl, price, id } = action.payload; 
+            const newProduct = new Product(id, 'u1', title, imageUrl, description, price);
 
             return {
                 ...state,
@@ -46,6 +46,3 @@ export const productsReducer = (state = initialState, action) => {
             return state;
     }
 }
-
-// 5EC4FF
-// 008B94
