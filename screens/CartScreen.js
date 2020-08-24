@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Button, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Button, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { appTheme } from '../constants/colors';
 import { CartItem } from '../components/shop/CartItem';
@@ -8,15 +8,29 @@ import { addOrder } from '../store/actions/orders';
 import { Card } from '../components/UI/Card';
 
 export const CartScreen = (props) => {
-    const cartTotal = useSelector(state => state.cart.totalAmount);
-    const cartItems = useSelector(state => Object.keys(state.cart.items)
-        .map(key => ({ ...state.cart.items[key], productId: key }) ))
-        .sort((a, b) => a.productId > b.productId ? 1 : -1);
+    const [status, setStatus] = React.useState('idle');
+    const cartTotal = useSelector((state) => state.cart.totalAmount);
+    const cartItems = useSelector((state) =>
+        Object.keys(state.cart.items).map((key) => ({ ...state.cart.items[key], productId: key }))
+    ).sort((a, b) => (a.productId > b.productId ? 1 : -1));
 
     const dispatch = useDispatch();
 
-    const handleOrder = () => {
-        dispatch(addOrder(cartItems, cartTotal));
+    const handleOrder = async () => {
+        try {
+            setStatus('loading');
+            await dispatch(addOrder(cartItems, cartTotal));
+        } catch (err) {
+            setStatus('error');
+        }
+    };
+
+    if (status === 'loading') {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={appTheme.primary} />
+            </View>
+        );
     }
 
     return (
@@ -25,13 +39,18 @@ export const CartScreen = (props) => {
                 <Text style={styles.summaryText}>
                     <Text style={styles.amount}>${Math.abs(cartTotal.toFixed(2))}</Text>
                 </Text>
-                <Button title='Order Now' color={appTheme.accent} disabled={!cartItems.length} onPress={handleOrder}/>
+                <Button
+                    title='Order Now'
+                    color={appTheme.accent}
+                    disabled={!cartItems.length}
+                    onPress={handleOrder}
+                />
             </Card>
             <FlatList
                 data={cartItems}
-                keyExtractor={item => item.productId}
+                keyExtractor={(item) => item.productId}
                 renderItem={({ item }) => (
-                    <CartItem 
+                    <CartItem
                         quantity={item.quantity}
                         title={item.title}
                         deleteable
@@ -42,7 +61,7 @@ export const CartScreen = (props) => {
             />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -54,16 +73,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
-        padding: 10, 
+        padding: 10,
     },
     summaryText: {
         fontFamily: 'open-sans-bold',
         fontSize: 18,
     },
     amount: {
-        color: appTheme.primary
+        color: appTheme.primary,
     },
-    cartItems: {
-
-    },
+    cartItems: {},
 });

@@ -1,10 +1,18 @@
 import React, { useCallback, useLayoutEffect, useReducer } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, ScrollView } from 'react-native';
+import {
+    View,
+    KeyboardAvoidingView,
+    StyleSheet,
+    ScrollView,
+    ActivityIndicator,
+    Alert,
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { CustomHeaderButton } from '../components/UI/HeaderButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProduct, createProduct } from '../store/actions/products';
 import { Input } from '../components/UI/Input';
+import { appTheme } from '../constants/colors';
 
 const formReducer = (state, action) => {
     switch (action.type) {
@@ -13,11 +21,11 @@ const formReducer = (state, action) => {
             const updatedValues = {
                 ...state.inputValues,
                 [field]: text,
-            }
+            };
             const updatedValidities = {
                 ...state.inputValidities,
                 [field]: isValid,
-            }
+            };
             let formIsValid = true;
             for (const key in updatedValidities) {
                 formIsValid = formIsValid && updatedValidities[key];
@@ -26,7 +34,6 @@ const formReducer = (state, action) => {
                 formIsValid,
                 inputValues: updatedValues,
                 inputValidities: updatedValidities,
-
             };
         }
         default:
@@ -35,8 +42,11 @@ const formReducer = (state, action) => {
 };
 
 export const EditProductScreen = ({ navigation, route }) => {
+    const [status, setStatus] = React.useState('idle');
     const id = route.params?.productId;
-    const editedProduct = useSelector(state => state.products.userProducts.find(prod => prod.id === id));
+    const editedProduct = useSelector((state) =>
+        state.products.userProducts.find((prod) => prod.id === id)
+    );
     const dispatch = useDispatch();
 
     const [state, updater] = useReducer(formReducer, {
@@ -44,7 +54,7 @@ export const EditProductScreen = ({ navigation, route }) => {
             title: editedProduct?.title || '',
             imageUrl: editedProduct?.imageUrl || '',
             description: editedProduct?.description || '',
-            price: ''
+            price: '',
         },
         inputValidities: {
             title: editedProduct ? true : false,
@@ -57,18 +67,23 @@ export const EditProductScreen = ({ navigation, route }) => {
 
     const { title, imageUrl, price, description } = state.inputValues;
 
-    const submitHandler = useCallback(() => {
+    const submitHandler = useCallback(async () => {
         if (!state.formIsValid) {
             return;
         }
+        setStatus('loading');
 
-        if (editedProduct) {
-            dispatch(updateProduct(id, title, description, imageUrl))
+        try {
+            if (editedProduct) {
+                await dispatch(updateProduct(id, title, description, imageUrl));
+            } else {
+                await dispatch(createProduct(title, description, imageUrl, +price));
+            }
+            setStatus('idle');
+            navigation.goBack();
+        } catch (err) {
+            setStatus('error');
         }
-        else {
-            dispatch(createProduct(title, description, imageUrl, +price))
-        } 
-        navigation.goBack();
     }, [dispatch, id, title, description, imageUrl, price, navigation]);
 
     useLayoutEffect(() => {
@@ -78,16 +93,30 @@ export const EditProductScreen = ({ navigation, route }) => {
                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                     <Item iconName={'ios-checkmark'} iconSize={28} onPress={submitHandler} />
                 </HeaderButtons>
-            )
-        })
-    }, [navigation, id, submitHandler])
+            ),
+        });
+    }, [navigation, id, submitHandler]);
+
+    React.useEffect(() => {
+        if (status === 'error') {
+            Alert.alert('An error occured', 'Something went wrong', [{ text: 'Okay' }]);
+        }
+    }, [status]);
 
     const textChangeHandler = (fieldName, text) => {
         let isValid = false;
         if (text.trim().length > 0) {
             isValid = true;
         }
-        updater({ type: 'UPDATE', payload: { field: fieldName, text, isValid }})
+        updater({ type: 'UPDATE', payload: { field: fieldName, text, isValid } });
+    };
+
+    if (status === 'loading') {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={appTheme.primary} />
+            </View>
+        );
     }
 
     return (
@@ -97,7 +126,7 @@ export const EditProductScreen = ({ navigation, route }) => {
                     <Input
                         value={title}
                         label={'Title'}
-                        autoCapitalize='sentences' 
+                        autoCapitalize='sentences'
                         onChangeText={textChangeHandler.bind(this, 'title')}
                     />
                     <Input
@@ -117,7 +146,7 @@ export const EditProductScreen = ({ navigation, route }) => {
                         label={'Description'}
                         onChangeText={textChangeHandler.bind(this, 'description')}
                         numberOfLines={3}
-                        autoCapitalize='sentences' 
+                        autoCapitalize='sentences'
                         multiline
                         autoCorrect
                     />
@@ -125,10 +154,14 @@ export const EditProductScreen = ({ navigation, route }) => {
             </ScrollView>
         </KeyboardAvoidingView>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    container: {},
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     form: {
         margin: 20,
     },
