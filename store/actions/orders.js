@@ -6,19 +6,23 @@ export const SET_ORDERS = 'SET_ORDERS';
 export const addOrder = (cartItems, totalAmount) => {
     const date = new Date().toISOString();
 
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
         try {
-            const response = await fetch('https://rn-course-max.firebaseio.com/orders/u1.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    cartItems,
-                    totalAmount,
-                    date,
-                }),
-            });
+            const response = await fetch(
+                `https://rn-course-max.firebaseio.com/orders/u1.json?auth=${token}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cartItems,
+                        totalAmount,
+                        date,
+                    }),
+                }
+            );
 
             if (!response.ok) {
                 throw new Error('Something went wrong!');

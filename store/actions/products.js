@@ -6,9 +6,10 @@ export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const deleteProduct = (productId) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
         const response = await fetch(
-            `https://rn-course-max.firebaseio.com/products/${productId}.json`,
+            `https://rn-course-max.firebaseio.com/products/${productId}.json?auth=${token}`,
             {
                 method: 'DELETE',
             }
@@ -27,15 +28,19 @@ export const deleteProduct = (productId) => {
 export const createProduct = (title, description, imageUrl, price) => {
     const newProductData = { title, description, imageUrl, price };
 
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
         try {
-            const response = await fetch('https://rn-course-max.firebaseio.com/products.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newProductData),
-            });
+            const response = await fetch(
+                `https://rn-course-max.firebaseio.com/products.json?auth=${token}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newProductData),
+                }
+            );
 
             if (!response.ok) {
                 throw new Error('Something went wrong!');
@@ -91,14 +96,18 @@ export const fetchProducts = () => {
 export const updateProduct = (id, title, description, imageUrl) => {
     const updatedData = { title, description, imageUrl };
 
-    return async (dispatch) => {
-        const response = await fetch(`https://rn-course-max.firebaseio.com/products/${id}.json`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedData),
-        });
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const response = await fetch(
+            `https://rn-course-max.firebaseio.com/products/${id}.json?auth=${token}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            }
+        );
 
         if (!response.ok) {
             throw new Error('Something went wrong!');
