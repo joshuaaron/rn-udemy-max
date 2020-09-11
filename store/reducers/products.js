@@ -1,10 +1,9 @@
-import { PRODUCTS } from '../../data';
 import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT, SET_PRODUCTS } from '../actions/products';
 import { Product } from '../../models/product';
 
 const initialState = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter((prod) => prod.ownerId === 'u1'),
+    availableProducts: [],
+    userProducts: [],
 };
 
 export const productsReducer = (state = initialState, action) => {
@@ -12,13 +11,13 @@ export const productsReducer = (state = initialState, action) => {
         case SET_PRODUCTS: {
             return {
                 ...state,
-                availableProducts: action.payload,
-                userProducts: action.payload.filter((prod) => prod.ownerId === 'u1'),
+                availableProducts: action.payload.loadedProducts,
+                userProducts: action.payload.userProducts,
             };
         }
         case CREATE_PRODUCT: {
-            const { title, description, imageUrl, price, id } = action.payload;
-            const newProduct = new Product(id, 'u1', title, imageUrl, description, price);
+            const { title, description, imageUrl, price, id, ownerId } = action.payload;
+            const newProduct = new Product(id, ownerId, title, imageUrl, description, price);
 
             return {
                 ...state,

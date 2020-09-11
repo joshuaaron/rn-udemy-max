@@ -1,5 +1,11 @@
+import { As, AsyncStorage } from 'react-native';
+
 export const SIGN_UP = 'SIGN_UP';
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const RESTORE_TOKEN = 'RESTORE_TOKEN';
+
+let timeoutId = null;
 
 export const signUp = (email, password) => {
     return async (dispatch) => {
@@ -39,6 +45,9 @@ export const signUp = (email, password) => {
                     userId: data.localId,
                 },
             });
+            // convert back from huge ms number to date time object
+            const expireDate = new Date(new Date().getTime() + parseInt(data.expiresIn * 1000, 10));
+            saveDataToStorage(data.idToken, data.localId, expireDate);
         } catch (err) {
             throw new Error(err.message);
         }
@@ -84,8 +93,38 @@ export const login = (email, password) => {
                     userId: data.localId,
                 },
             });
+            // convert back from huge ms number to date time object
+            const expireDate = new Date(new Date().getTime() + parseInt(data.expiresIn * 1000, 10));
+            saveDataToStorage(data.idToken, data.localId, expireDate);
         } catch (err) {
             throw new Error(err.message);
         }
     };
+};
+
+export const logout = () => {
+    clearLogoutTimer();
+    AsyncStorage.removeItem('userData');
+    return { type: LOGOUT };
+};
+
+const setLogoutTimer = (expirationTime) => {
+    return (dispatch) => {
+        timeoutId = setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime);
+    };
+};
+
+const clearLogoutTimer = () => {
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+};
+
+export const saveDataToStorage = async (token, userId, expiryDate) => {
+    await AsyncStorage.setItem(
+        'userData',
+        JSON.stringify({ token, userId, expiryDate: expiryDate.toISOString() })
+    );
 };

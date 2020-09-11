@@ -7,10 +7,10 @@ export const addOrder = (cartItems, totalAmount) => {
     const date = new Date().toISOString();
 
     return async (dispatch, getState) => {
-        const token = getState().auth.token;
+        const { token, userId } = getState().auth;
         try {
             const response = await fetch(
-                `https://rn-course-max.firebaseio.com/orders/u1.json?auth=${token}`,
+                `https://rn-course-max.firebaseio.com/orders/${userId}.json?auth=${token}`,
                 {
                     method: 'POST',
                     headers: {
@@ -46,9 +46,13 @@ export const addOrder = (cartItems, totalAmount) => {
 };
 
 export function fetchOrders() {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const { userId } = getState().auth;
+
         try {
-            const response = await fetch('https://rn-course-max.firebaseio.com/orders/u1.json');
+            const response = await fetch(
+                `https://rn-course-max.firebaseio.com/orders/${userId}.json`
+            );
             const data = await response.json();
 
             const loadedOrders = [];

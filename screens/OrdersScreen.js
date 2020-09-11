@@ -55,6 +55,14 @@ export const OrdersScreen = ({ navigation }) => {
         );
     }
 
+    if (!orders.length) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>No products found, maybe start creating some?</Text>
+            </View>
+        );
+    }
+
     const renderOrder = ({ item }) => {
         return <OrderItem date={item.readableDate} amount={item.totalAmount} items={item.items} />;
     };

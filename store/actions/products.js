@@ -26,10 +26,10 @@ export const deleteProduct = (productId) => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-    const newProductData = { title, description, imageUrl, price };
-
     return async (dispatch, getState) => {
-        const token = getState().auth.token;
+        const { token, userId } = getState().auth;
+        const newProductData = { title, description, imageUrl, price, ownerId: userId };
+
         try {
             const response = await fetch(
                 `https://rn-course-max.firebaseio.com/products.json?auth=${token}`,
@@ -56,6 +56,7 @@ export const createProduct = (title, description, imageUrl, price) => {
                     description,
                     imageUrl,
                     price,
+                    ownerId: userId,
                 },
             });
         } catch (err) {
@@ -65,7 +66,9 @@ export const createProduct = (title, description, imageUrl, price) => {
 };
 
 export const fetchProducts = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const { userId } = getState().auth;
+
         try {
             const response = await fetch('https://rn-course-max.firebaseio.com/products.json');
             const data = await response.json();
@@ -75,7 +78,7 @@ export const fetchProducts = () => {
                 loadedProducts.push(
                     new Product(
                         key,
-                        'u1',
+                        data[key].ownerId,
                         data[key].title,
                         data[key].imageUrl,
                         data[key].description,
@@ -85,7 +88,10 @@ export const fetchProducts = () => {
             }
             dispatch({
                 type: SET_PRODUCTS,
-                payload: loadedProducts,
+                payload: {
+                    loadedProducts,
+                    userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+                },
             });
         } catch (err) {
             console.log(err.message);

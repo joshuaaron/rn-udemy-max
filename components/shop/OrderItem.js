@@ -9,7 +9,7 @@ export const OrderItem = (props) => {
 
     const text = showDetails ? 'Hide Details' : 'Show Details';
     const handleShowDetails = () => {
-        setShowDetails(s => !s);
+        setShowDetails((s) => !s);
     };
 
     return (
@@ -19,9 +19,9 @@ export const OrderItem = (props) => {
                 <Text style={styles.date}>{props.date}</Text>
             </View>
             <Button color={appTheme.primary} onPress={handleShowDetails} title={text} />
-            {showDetails && ( 
+            {showDetails && (
                 <View style={styles.details}>
-                    {props.items.map(item => (
+                    {props.items?.map((item) => (
                         <CartItem
                             key={item.title}
                             quantity={item.quantity}
@@ -34,7 +34,7 @@ export const OrderItem = (props) => {
             )}
         </Card>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -55,9 +55,9 @@ const styles = StyleSheet.create({
     date: {
         fontFamily: 'open-sans',
         fontSize: 16,
-        color: '#888'
+        color: '#888',
     },
     details: {
-        width: '100%'
-    }
+        width: '100%',
+    },
 });
