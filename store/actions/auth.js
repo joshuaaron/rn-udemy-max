@@ -37,7 +37,7 @@ export const signUp = (email, password) => {
             }
 
             const data = await response.json();
-
+            dispatch(setLogoutTimer(parseInt(data.expiresIn * 1000, 10)));
             dispatch({
                 type: SIGN_UP,
                 payload: {
@@ -86,6 +86,7 @@ export const login = (email, password) => {
             }
 
             const data = await response.json();
+            dispatch(setLogoutTimer(parseInt(data.expiresIn * 1000, 10)));
             dispatch({
                 type: LOGIN,
                 payload: {
