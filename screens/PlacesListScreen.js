@@ -30,7 +30,19 @@ export const PlacesListScreen = ({ navigation }) => {
             <FlatList
                 data={places}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <PlaceItem />}
+                renderItem={({ item }) => (
+                    <PlaceItem
+                        image={item.imageUri}
+                        title={item.title}
+                        address={null}
+                        onSelect={() => {
+                            navigation.navigate('PlaceDetail', {
+                                title: item.title,
+                                id: item.id,
+                            });
+                        }}
+                    />
+                )}
             />
         </View>
     );
