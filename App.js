@@ -4,26 +4,37 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
 
 import { PlacesListScreen } from './screens/PlacesListScreen';
 import { PlaceDetailScreen } from './screens/PlaceDetailScreen';
 import { MapScreen } from './screens/MapScreen';
 import { NewPlaceScreen } from './screens/NewPlaceScreen';
 import { Colors } from './constants/colors';
-
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import ReduxThunk from 'redux-thunk';
 import { placesReducer } from './store/reducer';
+import { init } from './helpers/db';
 
 const rootReducer = combineReducers({
     places: placesReducer,
 });
 
+init()
+    .then(() => {
+        console.log('Initialized Database');
+    })
+    .catch((err) => {
+        console.log('Initializing db failed ', err);
+    });
+
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const Stack = createStackNavigator();
-const Tab = Platform.OS === 'ios' ? createBottomTabNavigator() : createMaterialBottomTabNavigator();
+const Tab =
+    Platform.OS === 'ios'
+        ? createBottomTabNavigator()
+        : createMaterialBottomTabNavigator();
 
 export default function App() {
     return (
