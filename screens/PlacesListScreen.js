@@ -1,12 +1,18 @@
-import React from 'react';
-import { View, Text, StyleSheet, Platform, FlatList } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { CustomHeaderButton } from '../components/HeaderButton';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PlaceItem } from '../components/PlaceItem';
+import { loadPlaces } from '../store/actions';
 
 export const PlacesListScreen = ({ navigation }) => {
     const places = useSelector((state) => state.places.places);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(loadPlaces());
+    }, [dispatch]);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({

@@ -1,11 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, Button, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    Button,
+    ScrollView,
+} from 'react-native';
 import { Colors } from '../constants/colors';
 import { useDispatch } from 'react-redux';
 import { addPlace } from '../store/actions';
 import { ImgPicker } from '../components/ImagePicker';
+import { LocationPicker } from '../components/LocationPicker';
 
-export const NewPlaceScreen = (props) => {
+export const NewPlaceScreen = ({ navigation, route }) => {
     const [title, setTitle] = React.useState('');
     const [image, setImage] = React.useState('');
 
@@ -30,7 +38,12 @@ export const NewPlaceScreen = (props) => {
                     autoCorrect={false}
                 />
                 <ImgPicker onImageTaken={handleImageTaken} />
-                <Button title='Save Place' color={Colors.primary} onPress={savePlace} />
+                <LocationPicker navigation={navigation} route={route} />
+                <Button
+                    title='Save Place'
+                    color={Colors.primary}
+                    onPress={savePlace}
+                />
             </View>
         </ScrollView>
     );
