@@ -8,7 +8,9 @@ export const PlaceItem = (props) => {
             <Image style={styles.image} source={{ uri: props.image }} />
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{props.title}</Text>
-                <Text style={styles.address}>{props.address}</Text>
+                <Text style={styles.address}>
+                    Lat: {props.lat.toFixed(2)} | Lng: {props.lng.toFixed(2)}
+                </Text>
             </View>
         </TouchableOpacity>
     );

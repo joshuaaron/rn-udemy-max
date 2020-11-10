@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { CustomHeaderButton } from '../components/HeaderButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,9 +11,9 @@ export const PlacesListScreen = ({ navigation }) => {
     const places = useSelector((state) => state.places.places);
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    useFocusEffect(() => {
         dispatch(loadPlaces());
-    }, [dispatch]);
+    }, [dispatch, loadPlaces]);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -40,7 +41,8 @@ export const PlacesListScreen = ({ navigation }) => {
                     <PlaceItem
                         image={item.imageUri}
                         title={item.title}
-                        address={null}
+                        lat={item.lat}
+                        lng={item.lng}
                         onSelect={() => {
                             navigation.navigate('PlaceDetail', {
                                 title: item.title,

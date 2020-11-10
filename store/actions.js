@@ -1,11 +1,12 @@
 import * as FileSystem from 'expo-file-system';
+import { VARS } from '../env';
 import { insertPlace, fetchPlaces, deletePlaceById } from '../helpers/db';
 
 export const ADD_PLACE = 'ADD_PLACE';
 export const SET_PLACES = 'SET_PLACES';
 export const DELETE_PLACE = 'DELETE_PACE';
 
-export const addPlace = (title, image) => {
+export const addPlace = (title, image, location) => {
     return async (dispatch) => {
         const fileName = image.split('/').pop(); // returns the last string for the filename from the path.
         const newPath = FileSystem.documentDirectory + fileName;
@@ -20,13 +21,19 @@ export const addPlace = (title, image) => {
                 title,
                 newPath,
                 'Dummy add',
-                15.6,
-                12.3
+                location.latitude,
+                location.longitude
             );
 
             dispatch({
                 type: ADD_PLACE,
-                payload: { title, newPath, id: dbResult.insertId },
+                payload: {
+                    title,
+                    newPath,
+                    id: dbResult.insertId,
+                    lat: location.latitude,
+                    lng: location.longitude,
+                },
             });
         } catch (err) {
             console.log(err);
@@ -48,9 +55,8 @@ export const loadPlaces = () => {
 export const deletePlace = (id) => {
     return async (dispatch) => {
         try {
-            const result = await deletePlaceById(id);
-            console.log('RES ', result);
-            dispatch({ type: DELETE_PLACE, payload: 'sasa' });
+            await deletePlaceById(id);
+            dispatch({ type: DELETE_PLACE, payload: id });
         } catch (err) {
             throw err;
         }

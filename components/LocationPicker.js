@@ -11,26 +11,32 @@ import {
 import { Colors } from '../constants/colors';
 import { MapPreview } from './MapPreview';
 
-export const LocationPicker = ({ navigation, route }) => {
+export const LocationPicker = ({ navigation, route, onLocationPicked }) => {
     const [location, setLocation] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
 
     const pickedLocation = route.params?.pickedLocation;
+
     useEffect(() => {
         if (pickedLocation) {
             setLocation(pickedLocation);
+            onLocationPicked(pickedLocation);
         }
-    }, [pickedLocation]);
+    }, [pickedLocation, onLocationPicked]);
 
     const verifyPermissions = async () => {
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert(
-                'Insufficient permissions',
-                'You need to grant location permissions to use this app',
-                [{ text: 'Okay' }]
-            );
-            return false;
+        try {
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert(
+                    'Insufficient permissions',
+                    'You need to grant location permissions to use this app',
+                    [{ text: 'Okay' }]
+                );
+                return false;
+            }
+        } catch {
+            console.log('Error');
         }
         return true;
     };
@@ -44,7 +50,13 @@ export const LocationPicker = ({ navigation, route }) => {
         try {
             setIsFetching(true);
             const location = await Location.getCurrentPositionAsync({});
+
             setLocation({
+                lat: location.coords.latitude,
+                lng: location.coords.longitude,
+            });
+
+            onLocationPicked({
                 lat: location.coords.latitude,
                 lng: location.coords.longitude,
             });
